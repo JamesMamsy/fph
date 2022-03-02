@@ -63,19 +63,27 @@ ppProgram astInstance= let
 ppBindings :: AST -> String
 ppBindings = unlines . ppAST
 
+--Takes in the AST variable and provides a printed format using the Expression printer and expressions in the form of tuples
 ppAST :: AST -> [String]
 ppAST = map ppExprTup 
 
+--Pretty printer for given expression Tuples
 ppExprTup :: (Expr, Expr) -> String
 ppExprTup (lhs,rhs) = ppLHSExpr lhs ++ " = " ++ ppRHSExpr rhs
 
+--TODO Pretty print for Left hand expressions -Partially Implemented
 ppLHSExpr  :: Expr -> String
+ppLHSExpr Vec VE Expr = ppLHSExpr Expr
+ppLHSExpr Scalar VE DType Name = show Name
+ppLHSExpr SVec Size Expr = ppLHSExpr Expr
 ppLHSExpr = show
-
+--TODO Pretty print for Right hand expressions -Partially Implemented
 ppRHSExpr :: Expr -> String
+ppRHSExpr Vec VE Expr = ppRHSExpr Expr
+ppRHSExpr Scalar VE DType Name = show Name
 ppRHSExpr = show
 
--- Pretty-printer for the function signatures
+-- TODO Pretty-printer for the function signatures
 ppFSig :: FunctionSignature -> String
 ppFSig = show 
 
@@ -91,8 +99,9 @@ ppDType (DFVec dims dt) = "FVec "++ show dims ++" "++ ppDType dt
 ppDType (DTuple dts) = "("++  intercalate ", " (map ppDType dts) ++")"
 ppDType DDC = show DDC
 
+--TODO? Pretty Printer for Argument Declaration
 ppArgDecl :: (String, DType) -> String
-ppArgDecl = show
+ppArgDecl (name , this_type ) = name ++ " :: " ++ ppDType this_type
 
 ppArgDeclType :: (String, DType) -> String
 ppArgDeclType (_,argType) = ppDType argType
@@ -104,7 +113,7 @@ ppArgs pp argDecls
     | length argDecls == 1 = pp (head argDecls)
     | otherwise = "("++ intercalate "," (map pp argDecls) ++")"
 
--- Pretty-printer for stencil definitions
+--TODO? Pretty-printer for stencil definitions 
 ppStencilDef :: StencilDefinition -> String
 ppStencilDef (sname,sdef) = sname ++ " = "++ show sdef
 
